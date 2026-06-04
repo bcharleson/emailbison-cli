@@ -1,4 +1,10 @@
 import type { GlobalOptions } from './types.js';
+import { exitCodeFor } from './errors.js';
+
+// --agent forces compact JSON; --pretty only applies when not in agent mode.
+function prettyEnabled(opts?: GlobalOptions): boolean {
+  return Boolean(opts?.pretty) && !opts?.agent;
+}
 
 export function output(data: unknown, opts?: GlobalOptions): void {
   if (opts?.quiet) return;
@@ -9,7 +15,7 @@ export function output(data: unknown, opts?: GlobalOptions): void {
     result = projectFields(data, opts.fields);
   }
 
-  const json = opts?.pretty
+  const json = prettyEnabled(opts)
     ? JSON.stringify(result, null, 2)
     : JSON.stringify(result);
 
@@ -17,17 +23,19 @@ export function output(data: unknown, opts?: GlobalOptions): void {
 }
 
 export function outputError(error: { error: string; code: string }, opts?: GlobalOptions): void {
+  const exitCode = exitCodeFor(error.code);
+
   if (opts?.quiet) {
-    process.exitCode = 1;
+    process.exitCode = exitCode;
     return;
   }
 
-  const json = opts?.pretty
+  const json = prettyEnabled(opts)
     ? JSON.stringify(error, null, 2)
     : JSON.stringify(error);
 
   console.error(json);
-  process.exitCode = 1;
+  process.exitCode = exitCode;
 }
 
 function projectFields(data: unknown, fields: string): unknown {

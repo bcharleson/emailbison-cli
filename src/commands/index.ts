@@ -59,6 +59,7 @@ function getGlobalOpts(program: Command): GlobalOptions {
     fields: opts.fields,
     apiKey: opts.apiKey,
     baseUrl: opts.baseUrl,
+    agent: opts.agent,
   };
 }
 

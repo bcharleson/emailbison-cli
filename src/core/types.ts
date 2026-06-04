@@ -52,4 +52,6 @@ export interface GlobalOptions {
   fields?: string;
   apiKey?: string;
   baseUrl?: string;
+  /** Agent mode: compact JSON, non-interactive. */
+  agent?: boolean;
 }

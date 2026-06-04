@@ -68,6 +68,19 @@ function safeParse(text: string): Record<string, string> | null {
   }
 }
 
+/** Typed exit codes: 0 ok | 3 not-found | 4 auth | 20 server/http | 22 validation | 29 rate-limit | 1 generic. */
+export function exitCodeFor(code: string): number {
+  switch (code) {
+    case 'AUTH_ERROR': return 4;
+    case 'NOT_FOUND': return 3;
+    case 'VALIDATION_ERROR': return 22;
+    case 'RATE_LIMIT': return 29;
+    case 'SERVER_ERROR': return 20;
+    case 'HTTP_ERROR': return 20;
+    default: return 1;
+  }
+}
+
 export function formatError(error: unknown): { error: string; code: string } {
   if (error instanceof BisonError) {
     return { error: error.message, code: error.code };
