@@ -4,6 +4,7 @@ import { allCommands } from './commands/index.js';
 import { resolveAuth } from './core/auth.js';
 import { createClient } from './core/client.js';
 import { formatError } from './core/errors.js';
+import { VERSION } from './core/version.js';
 
 export async function startMcpFromCli(): Promise<void> {
   const auth = resolveAuth();
@@ -11,7 +12,7 @@ export async function startMcpFromCli(): Promise<void> {
 
   const server = new McpServer({
     name: 'emailbison',
-    version: '0.1.0',
+    version: VERSION,
   });
 
   for (const cmdDef of allCommands) {

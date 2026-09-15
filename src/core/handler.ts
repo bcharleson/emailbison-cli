@@ -7,7 +7,7 @@ export async function executeCommand(
 ): Promise<unknown> {
   let path = cmdDef.endpoint.path;
   const query: Record<string, unknown> = {};
-  const body: Record<string, unknown> = {};
+  let body: Record<string, unknown> = {};
 
   for (const [field, location] of Object.entries(cmdDef.fieldMappings)) {
     const value = input[field];
@@ -25,6 +25,8 @@ export async function executeCommand(
         break;
     }
   }
+
+  if (cmdDef.transformBody) body = cmdDef.transformBody(body);
 
   return client.request({
     method: cmdDef.endpoint.method,

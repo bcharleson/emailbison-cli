@@ -26,6 +26,8 @@ export interface CommandDefinition<TInput extends z.ZodObject<z.ZodRawShape> = z
     path: string;
   };
   fieldMappings: Record<string, 'path' | 'query' | 'body'>;
+  /** Optional reshape of the assembled body before sending (e.g. rename a field the API spells differently). */
+  transformBody?: (body: Record<string, unknown>) => Record<string, unknown>;
   handler: (input: z.infer<TInput>, client: BisonClient) => Promise<unknown>;
 }
 

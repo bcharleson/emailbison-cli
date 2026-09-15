@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 import { executeCommand } from '../../core/handler.js';
+import { booleanFlag } from '../../core/schema.js';
 
 export const repliesMarkAutomatedCommand: CommandDefinition = {
   name: 'replies_mark-automated',
@@ -13,7 +14,7 @@ export const repliesMarkAutomatedCommand: CommandDefinition = {
   ],
   inputSchema: z.object({
     reply_id: z.string().describe('Reply ID'),
-    is_automated: z.coerce.boolean().describe('Set automated (true) or not automated (false)'),
+    is_automated: booleanFlag.describe('Set automated (true) or not automated (false)'),
   }),
   cliMappings: {
     args: [{ field: 'reply_id', name: 'reply-id', required: true }],
@@ -23,5 +24,8 @@ export const repliesMarkAutomatedCommand: CommandDefinition = {
   },
   endpoint: { method: 'PATCH', path: '/api/replies/{reply_id}/mark-as-automated-or-not-automated' },
   fieldMappings: { reply_id: 'path', is_automated: 'body' },
+  // Same shape as mark-read-unread: the API's field is `automated`, not `is_automated`
+  // ("The automated field is required.", verified against the live API 2026-09-02).
+  transformBody: ({ is_automated, ...rest }: Record<string, unknown>) => ({ ...rest, automated: is_automated }),
   handler: (input, client) => executeCommand(repliesMarkAutomatedCommand, input, client),
 };

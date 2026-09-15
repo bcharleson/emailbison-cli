@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 import { executeCommand } from '../../core/handler.js';
+import { booleanFlag } from '../../core/schema.js';
 
 export const repliesListCommand: CommandDefinition = {
   name: 'replies_list',
@@ -15,7 +16,7 @@ export const repliesListCommand: CommandDefinition = {
   inputSchema: z.object({
     page: z.coerce.number().optional().describe('Page number for pagination'),
     campaign_id: z.string().optional().describe('Filter by campaign ID'),
-    is_read: z.coerce.boolean().optional().describe('Filter by read status'),
+    is_read: booleanFlag.optional().describe('Filter by read status'),
   }),
   cliMappings: {
     options: [

@@ -7,16 +7,18 @@ export const workspacesV11InviteMembersCommand: CommandDefinition = {
   group: 'workspaces-v1.1',
   subcommand: 'invite-members',
   description: 'Invite members to a workspace (v1.1).',
-  examples: ['bison workspaces-v1.1 invite-members --emails \'["user@example.com"]\''],
+  examples: ['bison workspaces-v1.1 invite-members --email user@example.com --role reseller'],
   inputSchema: z.object({
-    emails: z.string().describe('JSON string array of email addresses'),
+    email: z.string().describe('Email address to invite'),
+    role: z.string().describe('Role for the invited member, e.g. reseller, admin'),
   }),
   cliMappings: {
     options: [
-      { field: 'emails', flags: '--emails <string>', description: 'JSON string array of email addresses' },
+      { field: 'email', flags: '--email <string>', description: 'Email address to invite' },
+      { field: 'role', flags: '--role <string>', description: 'Role for the invited member, e.g. reseller, admin' },
     ],
   },
-  endpoint: { method: 'POST', path: '/api/workspaces/v1.1/invite-members' },
-  fieldMappings: { emails: 'body' },
+  endpoint: { method: 'POST', path: '/api/workspaces/invite-members' },
+  fieldMappings: { email: 'body', role: 'body' },
   handler: (input, client) => executeCommand(workspacesV11InviteMembersCommand, input, client),
 };

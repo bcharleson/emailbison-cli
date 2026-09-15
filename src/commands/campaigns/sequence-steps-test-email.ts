@@ -11,14 +11,16 @@ export const campaignsSequenceStepsTestEmailCommand: CommandDefinition = {
   inputSchema: z.object({
     sequence_step_id: z.string().describe('Sequence step ID'),
     to_email: z.string().describe('Email address to send test to'),
+    sender_email_id: z.string().optional().describe('Sender email account ID to send FROM (REQUIRED by the API)'),
   }),
   cliMappings: {
     options: [
       { field: 'sequence_step_id', flags: '--sequence-step-id <string>', description: 'Sequence step ID' },
       { field: 'to_email', flags: '--to-email <string>', description: 'Recipient email address' },
+      { field: 'sender_email_id', flags: '--sender-email-id <string>', description: 'Sender email account ID (REQUIRED by the API)' },
     ],
   },
   endpoint: { method: 'POST', path: '/api/campaigns/sequence-steps/{sequence_step_id}/test-email' },
-  fieldMappings: { sequence_step_id: 'path', to_email: 'body' },
+  fieldMappings: { sequence_step_id: 'path', to_email: 'body', sender_email_id: 'body' },
   handler: (input, client) => executeCommand(campaignsSequenceStepsTestEmailCommand, input, client),
 };
