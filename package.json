@@ -1,6 +1,6 @@
 {
   "name": "emailbison-cli",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "CLI and MCP server for the EmailBison cold email platform. Manage campaigns, leads, replies, sender accounts, warmup, and more — from your terminal.",
   "type": "module",
   "bin": {

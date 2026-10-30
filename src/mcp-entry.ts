@@ -11,7 +11,7 @@ export async function startMcpFromCli(): Promise<void> {
 
   const server = new McpServer({
     name: 'emailbison',
-    version: '0.1.0',
+    version: '0.1.3',
   });
 
   for (const cmdDef of allCommands) {
