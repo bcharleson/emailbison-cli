@@ -6,7 +6,7 @@ Warmup gradually increases sending volume on new or cold email accounts to build
 
 ```bash
 npm install -g emailbison-cli
-bison login --api-key <key> --base-url https://send.topoffunnel.com
+bison login --api-key <key> --base-url https://send.example.com
 bison status
 ```
 

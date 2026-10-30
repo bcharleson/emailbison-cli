@@ -10,17 +10,19 @@ CLI and MCP server for the EmailBison cold email platform. 157 commands across 2
 
 ## Authentication
 
+There is **no default instance URL**. Every EmailBison deployment has its own host. Commands and the MCP server fail until both an API key and a base URL are set.
+
 ```bash
-bison login --api-key <key> --base-url https://send.topoffunnel.com
+bison login --api-key <key> --base-url https://send.example.com
 ```
 
 Or set environment variables:
 ```bash
 export EMAILBISON_API_KEY=your-key
-export EMAILBISON_BASE_URL=https://send.topoffunnel.com
+export EMAILBISON_BASE_URL=https://send.example.com
 ```
 
-Resolution order: `--api-key` flag > `EMAILBISON_API_KEY` env > `~/.emailbison/config.json`
+The base URL must be `https` (trailing slash is stripped). Resolution order: flag > env (`EMAILBISON_API_KEY` / `EMAILBISON_BASE_URL`) > `~/.emailbison/config.json`.
 
 ## Key concepts
 

@@ -6,7 +6,7 @@ Create, configure, launch, pause, resume, archive, and duplicate email campaigns
 
 ```bash
 npm install -g emailbison-cli
-bison login --api-key <key> --base-url https://send.topoffunnel.com
+bison login --api-key <key> --base-url https://send.example.com
 ```
 
 ## commands

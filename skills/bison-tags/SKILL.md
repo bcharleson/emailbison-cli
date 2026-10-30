@@ -6,7 +6,7 @@ Tags provide a flexible labeling system to organize and filter campaigns, leads,
 
 ```bash
 npm install -g emailbison-cli
-bison login --api-key <key> --base-url https://send.topoffunnel.com
+bison login --api-key <key> --base-url https://send.example.com
 bison status
 ```
 

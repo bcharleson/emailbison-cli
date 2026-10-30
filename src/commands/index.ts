@@ -1,7 +1,7 @@
 import { createInterface } from 'node:readline/promises';
 import { Command } from 'commander';
 import type { CommandDefinition, GlobalOptions } from '../core/types.js';
-import { resolveAuth } from '../core/auth.js';
+import { normalizeBaseUrl, resolveAuth } from '../core/auth.js';
 import { createClient } from '../core/client.js';
 import { saveConfig, deleteConfig, loadConfig, getConfigPath } from '../core/config.js';
 import { output, outputError } from '../core/output.js';
@@ -65,13 +65,15 @@ function getGlobalOpts(program: Command): GlobalOptions {
 function registerLoginCommand(program: Command): void {
   program
     .command('login')
-    .description('Save your API key and base URL to ~/.emailbison/config.json')
-    .action(async () => {
+    .description('Save your API key and EmailBison instance base URL to ~/.emailbison/config.json')
+    .option('--api-key <key>', 'EmailBison API key')
+    .option('--base-url <url>', 'Your EmailBison instance base URL (https)')
+    .action(async (opts: { apiKey?: string; baseUrl?: string }) => {
       const globalOpts = getGlobalOpts(program);
 
-      // Resolution order: --api-key global flag > EMAILBISON_API_KEY env > interactive prompt
-      let apiKey = globalOpts.apiKey ?? process.env.EMAILBISON_API_KEY;
-      let baseUrl = globalOpts.baseUrl ?? process.env.EMAILBISON_BASE_URL;
+      // Resolution order: command flag > global flag > env > interactive prompt
+      let apiKey = opts.apiKey ?? globalOpts.apiKey ?? process.env.EMAILBISON_API_KEY;
+      let baseUrl = opts.baseUrl ?? globalOpts.baseUrl ?? process.env.EMAILBISON_BASE_URL;
 
       if (!apiKey || !baseUrl) {
         const rl = createInterface({ input: process.stdin, output: process.stderr });
@@ -79,23 +81,28 @@ function registerLoginCommand(program: Command): void {
           apiKey = (await rl.question('EmailBison API key: ')).trim();
         }
         if (!baseUrl) {
-          baseUrl = (await rl.question('Base URL (e.g. https://send.yourinstance.com): ')).trim();
+          baseUrl = (await rl.question('Base URL (e.g. https://send.example.com): ')).trim();
         }
         rl.close();
       }
 
       if (!apiKey) {
-        outputError({ error: 'API key is required.', code: 'VALIDATION_ERROR' }, globalOpts);
+        outputError({ error: 'API key is required. Pass --api-key or set EMAILBISON_API_KEY.', code: 'VALIDATION_ERROR' }, globalOpts);
         return;
       }
       if (!baseUrl) {
-        outputError({ error: 'Base URL is required.', code: 'VALIDATION_ERROR' }, globalOpts);
+        outputError({ error: 'Base URL is required. Pass --base-url or set EMAILBISON_BASE_URL.', code: 'VALIDATION_ERROR' }, globalOpts);
         return;
       }
 
-      const config: Record<string, string> = { api_key: apiKey };
-      if (baseUrl) config.base_url = baseUrl;
-      saveConfig(config);
+      try {
+        baseUrl = normalizeBaseUrl(baseUrl);
+      } catch (err) {
+        outputError(formatError(err), globalOpts);
+        return;
+      }
+
+      saveConfig({ api_key: apiKey, base_url: baseUrl });
       output({ success: true, message: 'Credentials saved.', config_path: getConfigPath() }, globalOpts);
     });
 }
@@ -152,7 +159,14 @@ function registerConfigCommand(program: Command): void {
       const globalOpts = getGlobalOpts(program);
       const updates: Record<string, string> = {};
       if (opts.apiKey) updates.api_key = opts.apiKey;
-      if (opts.baseUrl) updates.base_url = opts.baseUrl;
+      if (opts.baseUrl) {
+        try {
+          updates.base_url = normalizeBaseUrl(opts.baseUrl);
+        } catch (err) {
+          outputError(formatError(err), globalOpts);
+          return;
+        }
+      }
       if (Object.keys(updates).length === 0) {
         outputError({ error: 'Provide at least --api-key or --base-url', code: 'VALIDATION_ERROR' }, globalOpts);
         return;
@@ -180,8 +194,13 @@ function registerMcpCommand(program: Command): void {
     .command('mcp')
     .description('Start the MCP (Model Context Protocol) server over stdio')
     .action(async () => {
-      const { startMcpFromCli } = await import('../mcp-entry.js');
-      await startMcpFromCli();
+      const globalOpts = getGlobalOpts(program);
+      try {
+        const { startMcpFromCli } = await import('../mcp-entry.js');
+        await startMcpFromCli();
+      } catch (err) {
+        outputError(formatError(err), globalOpts);
+      }
     });
 }
 

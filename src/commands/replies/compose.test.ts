@@ -13,11 +13,11 @@ import { repliesReplyCommand } from './reply.js';
 
 const ORIGINAL_REPLY = {
   data: {
-    id: 2520939,
+    id: 12345,
     sender_email_id: 88,
-    from_name: 'Cody Smith',
-    from_email_address: 'cody@example.com',
-    lead: { first_name: 'Cody', last_name: 'Smith', email: 'cody@example.com' },
+    from_name: 'Jane Doe',
+    from_email_address: 'jane@example.com',
+    lead: { first_name: 'Jane', last_name: 'Doe', email: 'jane@example.com' },
   },
 };
 
@@ -30,11 +30,11 @@ function mockClient(onRequest: (opts: { method: string; path: string; body?: unk
 
 describe('parseRecipients', () => {
   it('parses a bare email, display name, and comma-separated list', () => {
-    expect(parseRecipients('cody@example.com')).toEqual([
-      { name: null, email_address: 'cody@example.com' },
+    expect(parseRecipients('jane@example.com')).toEqual([
+      { name: null, email_address: 'jane@example.com' },
     ]);
-    expect(parseRecipients('Cody Smith <cody@example.com>')).toEqual([
-      { name: 'Cody Smith', email_address: 'cody@example.com' },
+    expect(parseRecipients('Jane Doe <jane@example.com>')).toEqual([
+      { name: 'Jane Doe', email_address: 'jane@example.com' },
     ]);
     expect(parseRecipients('a@b.com, Jane <jane@x.com>')).toEqual([
       { name: null, email_address: 'a@b.com' },
@@ -57,7 +57,7 @@ describe('extractReplyDefaults', () => {
   it('reads sender inbox and original from-address from GET /api/replies/{id}', () => {
     expect(extractReplyDefaults(ORIGINAL_REPLY)).toEqual({
       sender_email_id: 88,
-      to_emails: [{ name: 'Cody Smith', email_address: 'cody@example.com' }],
+      to_emails: [{ name: 'Jane Doe', email_address: 'jane@example.com' }],
     });
   });
 
@@ -79,13 +79,13 @@ describe('buildComposePayload', () => {
       buildComposePayload({
         body_text: 'Hi...\\n\\nPara2',
         sender_email_id: 88,
-        to: 'cody@example.com',
+        to: 'jane@example.com',
       }),
     ).toEqual({
       message: '<p>Hi...</p><p>Para2</p>',
       content_type: 'html',
       sender_email_id: 88,
-      to_emails: [{ name: null, email_address: 'cody@example.com' }],
+      to_emails: [{ name: null, email_address: 'jane@example.com' }],
     });
   });
 
@@ -121,7 +121,7 @@ describe('buildComposePayload', () => {
       message: '<p>Thanks</p>',
       content_type: 'html',
       sender_email_id: 88,
-      to_emails: [{ name: 'Cody Smith', email_address: 'cody@example.com' }],
+      to_emails: [{ name: 'Jane Doe', email_address: 'jane@example.com' }],
     });
   });
 
@@ -200,17 +200,17 @@ describe('replies reply/new/forward handlers', () => {
     });
 
     const result = await repliesReplyCommand.handler(
-      { reply_id: '2520939', body_text: 'Hi...\\n\\nPara2', dry_run: true },
+      { reply_id: '12345', body_text: 'Hi...\\n\\nPara2', dry_run: true },
       client,
     );
 
-    expect(requests).toEqual([{ method: 'GET', path: '/api/replies/2520939' }]);
+    expect(requests).toEqual([{ method: 'GET', path: '/api/replies/12345' }]);
     expect(result).toEqual(
-      dryRunResult('POST', '/api/replies/2520939/reply', {
+      dryRunResult('POST', '/api/replies/12345/reply', {
         message: '<p>Hi...</p><p>Para2</p>',
         content_type: 'html',
         sender_email_id: 88,
-        to_emails: [{ name: 'Cody Smith', email_address: 'cody@example.com' }],
+        to_emails: [{ name: 'Jane Doe', email_address: 'jane@example.com' }],
       }),
     );
   });
@@ -224,7 +224,7 @@ describe('replies reply/new/forward handlers', () => {
 
     await repliesReplyCommand.handler(
       {
-        reply_id: '2520939',
+        reply_id: '12345',
         body_html: '<p>Thanks</p>',
         sender_email_id: 12,
         to: 'other@example.com',
@@ -235,7 +235,7 @@ describe('replies reply/new/forward handlers', () => {
     expect(requests).toEqual([
       {
         method: 'POST',
-        path: '/api/replies/2520939/reply',
+        path: '/api/replies/12345/reply',
         body: {
           message: '<p>Thanks</p>',
           content_type: 'html',

@@ -47,4 +47,4 @@ npm run typecheck
 
 ## Auth
 
-Bearer token via `--api-key`, `EMAILBISON_API_KEY`, or `~/.emailbison/config.json`. Base URL is configurable — each EmailBison instance has its own URL.
+Bearer token via `--api-key`, `EMAILBISON_API_KEY`, or `~/.emailbison/config.json`. Base URL is required (no default) via `--base-url`, `EMAILBISON_BASE_URL`, or config — each EmailBison instance has its own `https` URL. Missing either value fails with a message to run `bison login` or set the env var.

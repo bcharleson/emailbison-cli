@@ -6,6 +6,7 @@ import { createClient } from './core/client.js';
 import { formatError } from './core/errors.js';
 
 export async function startMcpFromCli(): Promise<void> {
+  // Same auth as the CLI: API key + the caller's own instance URL. No default host.
   const auth = resolveAuth();
   const client = createClient(auth);
 

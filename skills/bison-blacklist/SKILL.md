@@ -6,7 +6,7 @@ Blacklists prevent outreach to specific email addresses or entire domains. Use t
 
 ```bash
 npm install -g emailbison-cli
-bison login --api-key <key> --base-url https://send.topoffunnel.com
+bison login --api-key <key> --base-url https://send.example.com
 bison status
 ```
 
