@@ -6,7 +6,7 @@ This is the meta-skill that orchestrates a complete cold outbound campaign using
 
 ```bash
 npm install -g emailbison-cli
-bison login --api-key <key> --base-url https://send.topoffunnel.com
+bison login --api-key <key> --base-url https://send.example.com
 bison status
 ```
 

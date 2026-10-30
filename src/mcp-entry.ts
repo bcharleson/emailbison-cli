@@ -6,12 +6,13 @@ import { createClient } from './core/client.js';
 import { formatError } from './core/errors.js';
 
 export async function startMcpFromCli(): Promise<void> {
+  // Same auth as the CLI: API key + the caller's own instance URL. No default host.
   const auth = resolveAuth();
   const client = createClient(auth);
 
   const server = new McpServer({
     name: 'emailbison',
-    version: '0.1.0',
+    version: '0.1.3',
   });
 
   for (const cmdDef of allCommands) {

@@ -6,7 +6,7 @@ Manage your master inbox — list, read, reply, forward, triage, and classify em
 
 ```bash
 npm install -g emailbison-cli
-bison login --api-key <key> --base-url https://send.topoffunnel.com
+bison login --api-key <key> --base-url https://send.example.com
 ```
 
 ## commands

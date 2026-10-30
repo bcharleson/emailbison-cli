@@ -11,7 +11,7 @@ export class BisonError extends Error {
 }
 
 export class AuthError extends BisonError {
-  constructor(message = 'Authentication failed. Run "bison login" or set EMAILBISON_API_KEY.') {
+  constructor(message = 'Authentication failed. Run "bison login" or set EMAILBISON_API_KEY and EMAILBISON_BASE_URL.') {
     super(message, 'AUTH_ERROR', 401);
     this.name = 'AuthError';
   }

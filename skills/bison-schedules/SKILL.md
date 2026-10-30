@@ -6,7 +6,7 @@ Configure sending schedules for campaigns — set active days, time windows, tim
 
 ```bash
 npm install -g emailbison-cli
-bison login --api-key <key> --base-url https://send.topoffunnel.com
+bison login --api-key <key> --base-url https://send.example.com
 ```
 
 ## commands

@@ -6,7 +6,7 @@ Webhooks push real-time notifications to your endpoints when events occur (repli
 
 ```bash
 npm install -g emailbison-cli
-bison login --api-key <key> --base-url https://send.topoffunnel.com
+bison login --api-key <key> --base-url https://send.example.com
 bison status
 ```
 

@@ -42,21 +42,21 @@ npm install -g emailbison-cli
 
 Get your API key from your EmailBison dashboard (Settings → Developer API → New API Token).
 
-Pass `--api-key` and `--base-url` as **global** options (before `login`):
+Pass `--api-key` and `--base-url` on `login` (or as global flags / env vars):
 
 ```bash
-bison --api-key '25|abc...' --base-url 'https://send.yourinstance.com' login
+bison login --api-key 'your-api-key' --base-url 'https://send.example.com'
 ```
 
 Or use environment variables (works with any key format including `|`):
 
 ```bash
-export EMAILBISON_API_KEY='25|abc...'
-export EMAILBISON_BASE_URL='https://send.yourinstance.com'
+export EMAILBISON_API_KEY='your-api-key'
+export EMAILBISON_BASE_URL='https://send.example.com'
 bison login
 ```
 
-The base URL is your EmailBison instance URL. Each deployment has its own URL.
+The base URL is **your** EmailBison instance URL (`https`, no trailing slash). There is no default host — every deployment has its own URL. If neither a flag, `EMAILBISON_BASE_URL`, nor saved config provides one, every command (and the MCP server) fails and tells you to run `bison login` or set the env var.
 
 ### Step 3 — Verify
 
@@ -80,7 +80,7 @@ The base URL is resolved the same way:
 2. `EMAILBISON_BASE_URL` env var
 3. Stored config
 
-Both values are required — there is no default base URL. Every EmailBison instance has its own URL.
+Both values are required — there is **no default base URL**. The URL must be `https` (a trailing slash is stripped). Running any command or starting `bison mcp` without a configured base URL fails with: run `bison login` or set `EMAILBISON_BASE_URL`.
 
 ---
 
@@ -88,7 +88,7 @@ Both values are required — there is no default base URL. Every EmailBison inst
 
 ```bash
 # Authenticate
-bison login --api-key <key> --base-url https://send.yourinstance.com
+bison login --api-key <key> --base-url https://send.example.com
 
 # List campaigns
 bison campaigns list --pretty
@@ -127,10 +127,10 @@ bison replies list --pretty
 ### Auth & Config
 
 ```
-bison --api-key <key> [--base-url <url>] login
+bison login --api-key <key> --base-url <https-url>
 bison logout
 bison status
-bison config set [--api-key <key>] [--base-url <url>]
+bison config set [--api-key <key>] [--base-url <https-url>]
 bison config get
 ```
 
@@ -406,6 +406,8 @@ bison campaigns resume --campaign-id <id> --quiet
 
 Every command is available as an MCP tool for AI assistants.
 
+`bison mcp` uses the same auth as the CLI. Set `EMAILBISON_API_KEY` and `EMAILBISON_BASE_URL` (or run `bison login` first). The server will not start without both.
+
 ```bash
 bison mcp
 ```
@@ -420,7 +422,7 @@ bison mcp
       "args": ["emailbison-cli", "mcp"],
       "env": {
         "EMAILBISON_API_KEY": "your-api-key",
-        "EMAILBISON_BASE_URL": "https://send.yourinstance.com"
+        "EMAILBISON_BASE_URL": "https://send.example.com"
       }
     }
   }

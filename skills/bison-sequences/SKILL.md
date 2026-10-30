@@ -6,7 +6,7 @@ Create and manage email sequence steps within campaigns — including multi-step
 
 ```bash
 npm install -g emailbison-cli
-bison login --api-key <key> --base-url https://send.topoffunnel.com
+bison login --api-key <key> --base-url https://send.example.com
 ```
 
 ## commands
